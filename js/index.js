@@ -1,42 +1,61 @@
-// ITERATION 1
-
 function updateSubtotal(product) {
-  console.log('Calculating subtotal, yey!');
+  const price = product.querySelector('.price span');
+  const quantity = product.querySelector('.quantity input');
 
-  //... your code goes here
+  const subtotalPrice = Number(price.innerText) * Number(quantity.value);
+  const subtotal = product.querySelector('.subtotal span');
+  subtotal.innerText = subtotalPrice;
+
+  return subtotalPrice;
 }
 
 function calculateAll() {
-  // code in the following two lines is added just for testing purposes.
-  // it runs when only iteration 1 is completed. at later point, it can be removed.
-  const singleProduct = document.querySelector('.product');
-  updateSubtotal(singleProduct);
-  // end of test
+  // ITERATION 2 + 3
+  const productsAllCollection = document.getElementsByClassName('product');
+  const productsAll = [...productsAllCollection];
+  let totalPrice = 0;
 
-  // ITERATION 2
-  //... your code goes here
+  productsAll.forEach((product) => {
+    updateSubtotal(product);
+    totalPrice += updateSubtotal(product);
+  });
 
-  // ITERATION 3
-  //... your code goes here
+  document.querySelector('#total-value span').innerText = totalPrice;
 }
 
 // ITERATION 4
 
 function removeProduct(event) {
+
   const target = event.currentTarget;
-  console.log('The target in remove is:', target);
-  //... your code goes here
+  // table row .product > td .action > button .btn-remove
+  const productRowToRemove = target.parentNode.parentNode;
+  productRowToRemove.remove();
+
+  calculateAll();
 }
 
 // ITERATION 5
 
 function createProduct() {
-  //... your code goes here
+  // 1. data from new product input
+  const newProductRowInput = document.querySelector('.create-product');
+  const newProductNameInput = newProductRowInput.querySelector('input').value;
+  const newProductPriceInput = Number(newProductRowInput.querySelector('input[type = "number"]').value);
+
+  // 2. duplicating existing product row and the end of tablebody
+  const productRow = document.querySelector('.product');
+  const createNewProductRow = productRow.cloneNode(true);
+  document.querySelector('#cart tbody').appendChild(createNewProductRow);
+
+  // 3. outputting collected data from 1. to newly created row from 2.
+  createNewProductRow.querySelector('.name span').innerText = newProductNameInput;
+  createNewProductRow.querySelector('.price span').innerText = newProductPriceInput;
+
+  // 4. adding functionality to .btn-remove
+  createNewProductRow.querySelector('.btn-remove').addEventListener('click', removeProduct);
+
+  // 5. resetting values in input fields for new product
+  newProductRowInput.querySelector('input').value = '';
+  newProductRowInput.querySelector('input[type = "number"]').value = 0;
 }
-
-window.addEventListener('load', () => {
-  const calculatePricesBtn = document.getElementById('calculate');
-  calculatePricesBtn.addEventListener('click', calculateAll);
-
-  //... your code goes here
-});
